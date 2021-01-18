@@ -1,0 +1,1061 @@
+/**************************************
+Snazzy Maps
+***************************************/
+
+// When the window has finished loading create our google map below
+	google.maps.event.addDomListener(window, 'load', init);
+
+	function init() {
+	// Basic options for a simple Google Map
+	// For more options see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+	var mapOptions = {
+	// How zoomed in you want the map to start at (always required)
+	zoom: 9,
+	scrollwheel: false,
+	navigationControl: false,
+	mapTypeControl: false,
+	scaleControl: false,
+	draggable: false,
+
+	// The latitude and longitude to center the map (always required)
+	center: new google.maps.LatLng(37.137216, -85.979523), // New York
+
+	// How you would like to style the map. 
+	// This is where you would paste any style found on Snazzy Maps.
+	styles: [
+    {
+        "featureType": "administrative",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "lightness": 33
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#f2e5d4"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#c5dac6"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "lightness": 20
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "all",
+        "stylers": [
+            {
+                "lightness": 20
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#c5c6c6"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#e4d7c6"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#fbfaf7"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#acbcc9"
+            }
+        ]
+    }
+]};
+
+	// Get the HTML DOM element that will contain your map 
+	// We are using a div with id="map" seen below in the <body>
+	var mapElement = document.getElementById('map');
+
+	// Create the Google Map using our element and options defined above
+	var map = new google.maps.Map(mapElement, mapOptions);
+
+	// Let's also add a marker while we're at it
+	var marker = new google.maps.Marker({
+	  position: new google.maps.LatLng(37.137216, -85.979523),
+	  map: map,
+	  title: 'Funtown Mountain'
+	});
+}
+
+/**************************************
+Drop down menu for mobile and tablet
+***************************************/
+
+jQuery(function() {  
+    var pull        = jQuery('#pull');  
+        menu        = jQuery('nav ul');  
+        menuHeight  = menu.height();
+    jQuery(pull).on('click', function(e) {  
+        e.preventDefault();  
+        menu.slideToggle();  
+    });  
+});
+
+jQuery(window).resize(function(){  
+    var w = jQuery(window).width();  
+    if(w > 320 && menu.is(':hidden')) {  
+        menu.removeAttr('style');  
+    }  
+});
+
+/**************************************
+Main Menu smooth scrolling
+***************************************/
+
+jQuery(function() {
+  jQuery('a[href*=#]:not([href=#])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = jQuery(this.hash);
+      target = target.length ? target : jQuery('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        jQuery('html,body').animate({
+          scrollTop: target.offset().top - 120
+        }, 1000);
+        return false;
+      }
+    }
+  });
+});
+
+/**************************************
+Back to Top smooth scrolling
+***************************************/
+
+jQuery(document).ready(function(jQuery){
+  // browser window scroll (in pixels) after which the "back to top" link is shown
+  var offset = 600,
+    //browser window scroll (in pixels) after which the "back to top" link opacity is reduced
+    offset_opacity = 1200,
+    //duration of the top scrolling animation (in ms)
+    scroll_top_duration = 1500,
+    //grab the "back to top" link
+    jQueryback_to_top = jQuery('.cd-top');
+
+  //hide or show the "back to top" link
+  jQuery(window).scroll(function(){
+    ( jQuery(this).scrollTop() > offset ) ? jQueryback_to_top.addClass('cd-is-visible') : jQueryback_to_top.removeClass('cd-is-visible cd-fade-out');
+    if( jQuery(this).scrollTop() > offset_opacity ) { 
+      jQueryback_to_top.addClass('cd-fade-out');
+    }
+  });
+
+  //smooth scroll to top
+  jQueryback_to_top.on('click', function(event){
+    event.preventDefault();
+    jQuery('body,html').animate({
+      scrollTop: 0 ,
+      }, scroll_top_duration
+    );
+  });
+
+});
+
+/**************************************
+Select Form Override
+***************************************/
+
+/* 
+ * Selecter v3.2.4 - 2015-01-07 
+ * A jQuery plugin for replacing default select elements. Part of the Formstone Library. 
+ * http://formstone.it/selecter/ 
+ * 
+ * Copyright 2015 Ben Plum; MIT Licensed 
+ */
+
+;(function (jQuery, window) {
+  "use strict";
+
+  var guid = 0,
+    userAgent = (window.navigator.userAgent||window.navigator.vendor||window.opera),
+    isFirefox = /Firefox/i.test(userAgent),
+    isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(userAgent),
+    isFirefoxMobile = (isFirefox && isMobile),
+    jQuerybody = null;
+
+  /**
+   * @options
+   * @param callback [function] <jQuery.noop> "Select item callback"
+   * @param cover [boolean] <false> "Cover handle with option set"
+   * @param customClass [string] <''> "Class applied to instance"
+   * @param label [string] <''> "Label displayed before selection"
+   * @param external [boolean] <false> "Open options as links in new window"
+   * @param links [boolean] <false> "Open options as links in same window"
+   * @param mobile [boolean] <false> "Force desktop interaction on mobile"
+   * @param trim [int] <0> "Trim options to specified length; 0 to disable”
+   */
+  var options = {
+    callback: jQuery.noop,
+    cover: false,
+    customClass: "",
+    label: "",
+    external: false,
+    links: false,
+    mobile: false,
+    trim: 0
+  };
+
+  var pub = {
+
+    /**
+     * @method
+     * @name defaults
+     * @description Sets default plugin options
+     * @param opts [object] <{}> "Options object"
+     * @example jQuery.selecter("defaults", opts);
+     */
+    defaults: function(opts) {
+      options = jQuery.extend(options, opts || {});
+      return (typeof this === 'object') ? jQuery(this) : true;
+    },
+
+    /**
+     * @method
+     * @name disable
+     * @description Disables target instance or option
+     * @param option [string] <null> "Target option value"
+     * @example jQuery(".target").selecter("disable", "1");
+     */
+    disable: function(option) {
+      return jQuery(this).each(function(i, input) {
+        var data = jQuery(input).parent(".selecter").data("selecter");
+
+        if (data) {
+          if (typeof option !== "undefined") {
+            var index = data.jQueryitems.index( data.jQueryitems.filter("[data-value=" + option + "]") );
+
+            data.jQueryitems.eq(index).addClass("disabled");
+            data.jQueryoptions.eq(index).prop("disabled", true);
+          } else {
+            if (data.jQueryselecter.hasClass("open")) {
+              data.jQueryselecter.find(".selecter-selected").trigger("click.selecter");
+            }
+
+            data.jQueryselecter.addClass("disabled");
+            data.jQueryselect.prop("disabled", true);
+          }
+        }
+      });
+    },
+
+    /**
+     * @method
+     * @name destroy
+     * @description Removes instance of plugin
+     * @example jQuery(".target").selecter("destroy");
+     */
+    destroy: function() {
+      return jQuery(this).each(function(i, input) {
+        var data = jQuery(input).parent(".selecter").data("selecter");
+
+        if (data) {
+          if (data.jQueryselecter.hasClass("open")) {
+            data.jQueryselecter.find(".selecter-selected").trigger("click.selecter");
+          }
+
+          // Scroller support
+          if (jQuery.fn.scroller !== undefined) {
+            data.jQueryselecter.find(".selecter-options").scroller("destroy");
+          }
+
+          data.jQueryselect[0].tabIndex = data.tabIndex;
+
+          data.jQueryselect.find(".selecter-placeholder").remove();
+          data.jQueryselected.remove();
+          data.jQueryitemsWrapper.remove();
+
+          data.jQueryselecter.off(".selecter");
+
+          data.jQueryselect.off(".selecter")
+                .removeClass("selecter-element")
+                .show()
+                .unwrap();
+        }
+      });
+    },
+
+    /**
+     * @method
+     * @name enable
+     * @description Enables target instance or option
+     * @param option [string] <null> "Target option value"
+     * @example jQuery(".target").selecter("enable", "1");
+     */
+    enable: function(option) {
+      return jQuery(this).each(function(i, input) {
+        var data = jQuery(input).parent(".selecter").data("selecter");
+
+        if (data) {
+          if (typeof option !== "undefined") {
+            var index = data.jQueryitems.index( data.jQueryitems.filter("[data-value=" + option + "]") );
+            data.jQueryitems.eq(index).removeClass("disabled");
+            data.jQueryoptions.eq(index).prop("disabled", false);
+          } else {
+            data.jQueryselecter.removeClass("disabled");
+            data.jQueryselect.prop("disabled", false);
+          }
+        }
+      });
+    },
+
+
+    /**
+    * @method private
+    * @name refresh
+    * @description DEPRECATED - Updates instance base on target options
+    * @example jQuery(".target").selecter("refresh");
+    */
+    refresh: function() {
+      return pub.update.apply(jQuery(this));
+    },
+
+    /**
+    * @method
+    * @name update
+    * @description Updates instance base on target options
+    * @example jQuery(".target").selecter("update");
+    */
+    update: function() {
+      return jQuery(this).each(function(i, input) {
+        var data = jQuery(input).parent(".selecter").data("selecter");
+
+        if (data) {
+          var index = data.index;
+
+          data.jQueryallOptions = data.jQueryselect.find("option, optgroup");
+          data.jQueryoptions = data.jQueryallOptions.filter("option");
+          data.index = -1;
+
+          index = data.jQueryoptions.index(data.jQueryoptions.filter(":selected"));
+
+          _buildOptions(data);
+
+          if (!data.multiple) {
+            _update(index, data);
+          }
+        }
+      });
+    }
+  };
+
+  /**
+   * @method private
+   * @name _init
+   * @description Initializes plugin
+   * @param opts [object] "Initialization options"
+   */
+  function _init(opts) {
+    // Local options
+    opts = jQuery.extend({}, options, opts || {});
+
+    // Check for Body
+    if (jQuerybody === null) {
+      jQuerybody = jQuery("body");
+    }
+
+    // Apply to each element
+    var jQueryitems = jQuery(this);
+    for (var i = 0, count = jQueryitems.length; i < count; i++) {
+      _build(jQueryitems.eq(i), opts);
+    }
+    return jQueryitems;
+  }
+
+  /**
+   * @method private
+   * @name _build
+   * @description Builds each instance
+   * @param jQueryselect [jQuery object] "Target jQuery object"
+   * @param opts [object] <{}> "Options object"
+   */
+  function _build(jQueryselect, opts) {
+    if (!jQueryselect.hasClass("selecter-element")) {
+      // EXTEND OPTIONS
+      opts = jQuery.extend({}, opts, jQueryselect.data("selecter-options"));
+
+      opts.multiple = jQueryselect.prop("multiple");
+      opts.disabled = jQueryselect.is(":disabled");
+
+      if (opts.external) {
+        opts.links = true;
+      }
+
+      // Grab true original index, only if selected attribute exits
+      var jQueryoriginalOption = jQueryselect.find("[selected]").not(":disabled"),
+        originalOptionIndex = jQueryselect.find("option").index(jQueryoriginalOption);
+
+      if (!opts.multiple && opts.label !== "") {
+        jQueryselect.prepend('<option value="" class="selecter-placeholder" selected>' + opts.label + '</option>');
+        if (originalOptionIndex > -1) {
+          originalOptionIndex++;
+        }
+      } else {
+        opts.label = "";
+      }
+
+      // Build options array
+      var jQueryallOptions = jQueryselect.find("option, optgroup"),
+        jQueryoptions = jQueryallOptions.filter("option");
+
+      // If we didn't actually have a selected elemtn
+      if (!jQueryoriginalOption.length) {
+        jQueryoriginalOption = jQueryoptions.eq(0);
+      }
+
+      // Determine original item
+      var originalIndex = (originalOptionIndex > -1) ? originalOptionIndex : 0,
+        originalLabel = (opts.label !== "") ? opts.label : jQueryoriginalOption.text(),
+        wrapperTag = "div";
+
+      // Swap tab index, no more interacting with the actual select!
+      opts.tabIndex = jQueryselect[0].tabIndex;
+      jQueryselect[0].tabIndex = -1;
+
+      // Build HTML
+      var inner = "",
+        wrapper = "";
+
+      // Build wrapper
+      wrapper += '<' + wrapperTag + ' class="selecter ' + opts.customClass;
+      // Special case classes
+      if (isMobile) {
+        wrapper += ' mobile';
+      } else if (opts.cover) {
+        wrapper += ' cover';
+      }
+      if (opts.multiple) {
+        wrapper += ' multiple';
+      } else {
+        wrapper += ' closed';
+      }
+      if (opts.disabled) {
+        wrapper += ' disabled';
+      }
+      wrapper += '" tabindex="' + opts.tabIndex + '">';
+      wrapper += '</' + wrapperTag + '>';
+
+      // Build inner
+      if (!opts.multiple) {
+        inner += '<span class="selecter-selected">';
+        inner += jQuery('<span></span>').text( _trim(originalLabel, opts.trim) ).html();
+        inner += '</span>';
+      }
+      inner += '<div class="selecter-options">';
+      inner += '</div>';
+
+      // Modify DOM
+      jQueryselect.addClass("selecter-element")
+           .wrap(wrapper)
+           .after(inner);
+
+      // Store plugin data
+      var jQueryselecter = jQueryselect.parent(".selecter"),
+        data = jQuery.extend({
+          jQueryselect: jQueryselect,
+          jQueryallOptions: jQueryallOptions,
+          jQueryoptions: jQueryoptions,
+          jQueryselecter: jQueryselecter,
+          jQueryselected: jQueryselecter.find(".selecter-selected"),
+          jQueryitemsWrapper: jQueryselecter.find(".selecter-options"),
+          index: -1,
+          guid: guid++
+        }, opts);
+
+      _buildOptions(data);
+
+      if (!data.multiple) {
+        _update(originalIndex, data);
+      }
+
+      // Scroller support
+      if (jQuery.fn.scroller !== undefined) {
+        data.jQueryitemsWrapper.scroller();
+      }
+
+      // Bind click events
+      data.jQueryselecter.on("touchstart.selecter", ".selecter-selected", data, _onTouchStart)
+              .on("click.selecter", ".selecter-selected", data, _onClick)
+              .on("click.selecter", ".selecter-item", data, _onSelect)
+              .on("close.selecter", data, _onClose)
+              .data("selecter", data);
+
+      // Change events
+      data.jQueryselect.on("change.selecter", data, _onChange);
+
+      // Focus/Blur events
+      if (!isMobile) {
+        data.jQueryselecter.on("focusin.selecter", data, _onFocus)
+                .on("blur.selecter", data, _onBlur);
+
+        // Handle clicks to associated labels
+        data.jQueryselect.on("focusin.selecter", data, function(e) {
+          e.data.jQueryselecter.trigger("focus");
+        });
+      }
+    }
+  }
+
+  /**
+   * @method private
+   * @name _buildOptions
+   * @description Builds instance's option set
+   * @param data [object] "Instance data"
+   */
+  function _buildOptions(data) {
+    var html = '',
+      itemTag = (data.links) ? "a" : "span",
+      j = 0;
+
+    for (var i = 0, count = data.jQueryallOptions.length; i < count; i++) {
+      var jQueryop = data.jQueryallOptions.eq(i);
+
+      // Option group
+      if (jQueryop[0].tagName === "OPTGROUP") {
+        html += '<span class="selecter-group';
+        // Disabled groups
+        if (jQueryop.is(":disabled")) {
+          html += ' disabled';
+        }
+        html += '">' + jQueryop.attr("label") + '</span>';
+      } else {
+        var opVal = jQueryop.val();
+
+        if (!jQueryop.attr("value")) {
+          jQueryop.attr("value", opVal);
+        }
+
+        html += '<' + itemTag + ' class="selecter-item';
+        if (jQueryop.hasClass('selecter-placeholder')) {
+          html += ' placeholder';
+        }
+        // Default selected value - now handles multi's thanks to @kuilkoff
+        if (jQueryop.is(':selected')) {
+          html += ' selected';
+        }
+        // Disabled options
+        if (jQueryop.is(":disabled")) {
+          html += ' disabled';
+        }
+        html += '" ';
+        if (data.links) {
+          html += 'href="' + opVal + '"';
+        } else {
+          html += 'data-value="' + opVal + '"';
+        }
+        html += '>' + jQuery("<span></span>").text( _trim(jQueryop.text(), data.trim) ).html() + '</' + itemTag + '>';
+        j++;
+      }
+    }
+
+    data.jQueryitemsWrapper.html(html);
+    data.jQueryitems = data.jQueryselecter.find(".selecter-item");
+  }
+
+  /**
+   * @method private
+   * @name _onTouchStart
+   * @description Handles touchstart to selected item
+   * @param e [object] "Event data"
+   */
+  function _onTouchStart(e) {
+    e.stopPropagation();
+
+    var data = e.data;
+
+    data.touchStartEvent = e.originalEvent;
+
+    data.touchStartX = data.touchStartEvent.touches[0].clientX;
+    data.touchStartY = data.touchStartEvent.touches[0].clientY;
+
+    data.jQueryselecter.on("touchmove.selecter", ".selecter-selected", data, _onTouchMove)
+            .on("touchend.selecter", ".selecter-selected", data, _onTouchEnd);
+  }
+
+  /**
+   * @method private
+   * @name _onTouchMove
+   * @description Handles touchmove to selected item
+   * @param e [object] "Event data"
+   */
+  function _onTouchMove(e) {
+    var data = e.data,
+      oe = e.originalEvent;
+
+    if (Math.abs(oe.touches[0].clientX - data.touchStartX) > 10 || Math.abs(oe.touches[0].clientY - data.touchStartY) > 10) {
+      data.jQueryselecter.off("touchmove.selecter touchend.selecter");
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onTouchEnd
+   * @description Handles touchend to selected item
+   * @param e [object] "Event data"
+   */
+  function _onTouchEnd(e) {
+    var data = e.data;
+
+    data.touchStartEvent.preventDefault();
+
+    data.jQueryselecter.off("touchmove.selecter touchend.selecter");
+
+    _onClick(e);
+  }
+
+  /**
+   * @method private
+   * @name _onClick
+   * @description Handles click to selected item
+   * @param e [object] "Event data"
+   */
+  function _onClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var data = e.data;
+
+    if (!data.jQueryselect.is(":disabled")) {
+      jQuery(".selecter").not(data.jQueryselecter).trigger("close.selecter", [data]);
+
+      // Handle mobile, but not Firefox, unless desktop forced
+      if (!data.mobile && isMobile && !isFirefoxMobile) {
+        var el = data.jQueryselect[0];
+        if (window.document.createEvent) { // All
+          var evt = window.document.createEvent("MouseEvents");
+          evt.initMouseEvent("mousedown", false, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+          el.dispatchEvent(evt);
+        } else if (el.fireEvent) { // IE
+          el.fireEvent("onmousedown");
+        }
+      } else {
+        // Delegate intent
+        if (data.jQueryselecter.hasClass("closed")) {
+          _onOpen(e);
+        } else if (data.jQueryselecter.hasClass("open")) {
+          _onClose(e);
+        }
+      }
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onOpen
+   * @description Opens option set
+   * @param e [object] "Event data"
+   */
+  function _onOpen(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var data = e.data;
+
+    // Make sure it's not alerady open
+    if (!data.jQueryselecter.hasClass("open")) {
+      var offset = data.jQueryselecter.offset(),
+        bodyHeight = jQuerybody.outerHeight(),
+        optionsHeight = data.jQueryitemsWrapper.outerHeight(true),
+        selectedOffset = (data.index >= 0) ? data.jQueryitems.eq(data.index).position() : { left: 0, top: 0 };
+
+      // Calculate bottom of document
+      if (offset.top + optionsHeight > bodyHeight) {
+        data.jQueryselecter.addClass("bottom");
+      }
+
+      data.jQueryitemsWrapper.show();
+
+      // Bind Events
+      data.jQueryselecter.removeClass("closed")
+              .addClass("open");
+      jQuerybody.on("click.selecter-" + data.guid, ":not(.selecter-options)", data, _onCloseHelper);
+
+      _scrollOptions(data);
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onCloseHelper
+   * @description Determines if event target is outside instance before closing
+   * @param e [object] "Event data"
+   */
+  function _onCloseHelper(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (jQuery(e.currentTarget).parents(".selecter").length === 0) {
+      _onClose(e);
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onClose
+   * @description Closes option set
+   * @param e [object] "Event data"
+   */
+  function _onClose(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var data = e.data;
+
+    // Make sure it's actually open
+    if (data.jQueryselecter.hasClass("open")) {
+      data.jQueryitemsWrapper.hide();
+      data.jQueryselecter.removeClass("open bottom")
+              .addClass("closed");
+
+      jQuerybody.off(".selecter-" + data.guid);
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onSelect
+   * @description Handles option select
+   * @param e [object] "Event data"
+   */
+  function _onSelect(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var jQuerytarget = jQuery(this),
+      data = e.data;
+
+    if (!data.jQueryselect.is(":disabled")) {
+      if (data.jQueryitemsWrapper.is(":visible")) {
+        // Update
+        var index = data.jQueryitems.index(jQuerytarget);
+
+        if (index !== data.index) {
+          _update(index, data);
+          _handleChange(data);
+        }
+      }
+
+      if (!data.multiple) {
+        // Clean up
+        _onClose(e);
+      }
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onChange
+   * @description Handles external changes
+   * @param e [object] "Event data"
+   */
+  function _onChange(e, internal) {
+    var jQuerytarget = jQuery(this),
+      data = e.data;
+
+    if (!internal && !data.multiple) {
+      var index = data.jQueryoptions.index(data.jQueryoptions.filter("[value='" + _escape(jQuerytarget.val()) + "']"));
+
+      _update(index, data);
+      _handleChange(data);
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onFocus
+   * @description Handles instance focus
+   * @param e [object] "Event data"
+   */
+  function _onFocus(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var data = e.data;
+
+    if (!data.jQueryselect.is(":disabled") && !data.multiple) {
+      data.jQueryselecter.addClass("focus")
+              .on("keydown.selecter-" + data.guid, data, _onKeypress);
+
+      jQuery(".selecter").not(data.jQueryselecter)
+              .trigger("close.selecter", [ data ]);
+    }
+  }
+
+  /**
+   * @method private
+   * @name _onBlur
+   * @description Handles instance focus
+   * @param e [object] "Event data"
+   */
+  function _onBlur(e, internal, two) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var data = e.data;
+
+    data.jQueryselecter.removeClass("focus")
+            .off("keydown.selecter-" + data.guid);
+
+    jQuery(".selecter").not(data.jQueryselecter)
+            .trigger("close.selecter", [ data ]);
+  }
+
+  /**
+   * @method private
+   * @name _onKeypress
+   * @description Handles instance keypress, once focused
+   * @param e [object] "Event data"
+   */
+  function _onKeypress(e) {
+    var data = e.data;
+
+    if (e.keyCode === 13) {
+      if (data.jQueryselecter.hasClass("open")) {
+        _onClose(e);
+        _update(data.index, data);
+      }
+      _handleChange(data);
+    } else if (e.keyCode !== 9 && (!e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey)) {
+      // Ignore modifiers & tabs
+      e.preventDefault();
+      e.stopPropagation();
+
+      var total = data.jQueryitems.length - 1,
+        index = (data.index < 0) ? 0 : data.index;
+
+      // Firefox left/right support thanks to Kylemade
+      if (jQuery.inArray(e.keyCode, (isFirefox) ? [38, 40, 37, 39] : [38, 40]) > -1) {
+        // Increment / decrement using the arrow keys
+        index = index + ((e.keyCode === 38 || (isFirefox && e.keyCode === 37)) ? -1 : 1);
+
+        if (index < 0) {
+          index = 0;
+        }
+        if (index > total) {
+          index = total;
+        }
+      } else {
+        var input = String.fromCharCode(e.keyCode).toUpperCase(),
+          letter,
+          i;
+
+        // Search for input from original index
+        for (i = data.index + 1; i <= total; i++) {
+          letter = data.jQueryoptions.eq(i).text().charAt(0).toUpperCase();
+          if (letter === input) {
+            index = i;
+            break;
+          }
+        }
+
+        // If not, start from the beginning
+        if (index < 0 || index === data.index) {
+          for (i = 0; i <= total; i++) {
+            letter = data.jQueryoptions.eq(i).text().charAt(0).toUpperCase();
+            if (letter === input) {
+              index = i;
+              break;
+            }
+          }
+        }
+      }
+
+      // Update
+      if (index >= 0) {
+        _update(index, data);
+        _scrollOptions(data);
+      }
+    }
+  }
+
+  /**
+   * @method private
+   * @name _update
+   * @description Updates instance based on new target index
+   * @param index [int] "Selected option index"
+   * @param data [object] "instance data"
+   */
+  function _update(index, data) {
+    var jQueryitem = data.jQueryitems.eq(index),
+      isSelected = jQueryitem.hasClass("selected"),
+      isDisabled = jQueryitem.hasClass("disabled");
+
+    // Check for disabled options
+    if (!isDisabled) {
+      if (data.multiple) {
+        if (isSelected) {
+          data.jQueryoptions.eq(index).prop("selected", null);
+          jQueryitem.removeClass("selected");
+        } else {
+          data.jQueryoptions.eq(index).prop("selected", true);
+          jQueryitem.addClass("selected");
+        }
+      } else if (index > -1 && index < data.jQueryitems.length) {
+        var newLabel = jQueryitem.html(),
+          newValue = jQueryitem.data("value");
+
+        data.jQueryselected.html(newLabel)
+                .removeClass('placeholder');
+
+        data.jQueryitems.filter(".selected")
+               .removeClass("selected");
+
+        data.jQueryselect[0].selectedIndex = index;
+
+        jQueryitem.addClass("selected");
+        data.index = index;
+      } else if (data.label !== "") {
+        data.jQueryselected.html(data.label);
+      }
+    }
+  }
+
+  /**
+   * @method private
+   * @name _scrollOptions
+   * @description Scrolls options wrapper to specific option
+   * @param data [object] "Instance data"
+   */
+  function _scrollOptions(data) {
+    var jQueryselected = data.jQueryitems.eq(data.index),
+      selectedOffset = (data.index >= 0 && !jQueryselected.hasClass("placeholder")) ? jQueryselected.position() : { left: 0, top: 0 };
+
+    if (jQuery.fn.scroller !== undefined) {
+      data.jQueryitemsWrapper.scroller("scroll", (data.jQueryitemsWrapper.find(".scroller-content").scrollTop() + selectedOffset.top), 0)
+                .scroller("reset");
+    } else {
+      data.jQueryitemsWrapper.scrollTop( data.jQueryitemsWrapper.scrollTop() + selectedOffset.top );
+    }
+  }
+
+  /**
+   * @method private
+   * @name _handleChange
+   * @description Handles change events
+   * @param data [object] "Instance data"
+   */
+  function _handleChange(data) {
+    if (data.links) {
+      _launch(data);
+    } else {
+      data.callback.call(data.jQueryselecter, data.jQueryselect.val(), data.index);
+      data.jQueryselect.trigger("change", [ true ]);
+    }
+  }
+
+  /**
+   * @method private
+   * @name _launch
+   * @description Launches link
+   * @param data [object] "Instance data"
+   */
+  function _launch(data) {
+    //var url = (isMobile) ? data.jQueryselect.val() : data.jQueryoptions.filter(":selected").attr("href");
+    var url = data.jQueryselect.val();
+
+    if (data.external) {
+      // Open link in a new tab/window
+      window.open(url);
+    } else {
+      // Open link in same tab/window
+      window.location.href = url;
+    }
+  }
+
+  /**
+   * @method private
+   * @name _trim
+   * @description Trims text, if specified length is greater then 0
+   * @param length [int] "Length to trim at"
+   * @param text [string] "Text to trim"
+   * @return [string] "Trimmed string"
+   */
+  function _trim(text, length) {
+    if (length === 0) {
+      return text;
+    } else {
+      if (text.length > length) {
+        return text.substring(0, length) + "...";
+      } else {
+        return text;
+      }
+    }
+  }
+
+  /**
+   * @method private
+   * @name _escape
+   * @description Escapes text
+   * @param text [string] "Text to escape"
+   */
+  function _escape(text) {
+    return (typeof text === "string") ? text.replace(/([;&,\.\+\*\~':"\!\^#jQuery%@\[\]\(\)=>\|])/g, '\\jQuery1') : text;
+  }
+
+  jQuery.fn.selecter = function(method) {
+    if (pub[method]) {
+      return pub[method].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else if (typeof method === 'object' || !method) {
+      return _init.apply(this, arguments);
+    }
+    return this;
+  };
+
+  jQuery.selecter = function(method) {
+    if (method === "defaults") {
+      pub.defaults.apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+  };
+})(jQuery, window);
+

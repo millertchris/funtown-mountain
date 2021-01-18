@@ -1,0 +1,169 @@
+jQuery(function() {
+	var windowY = parseInt(jQuery(window).height());
+	var windowX = parseInt(jQuery(window).width());
+	var acceleration = 4;
+	var firstTime = true;
+	var parallaxItems = jQuery('.parallax');
+	/**************************************
+	Formstone Select Init / Options
+	***************************************/
+	jQuery("select").selecter();
+	
+	jQuery('.videoslider').slick({
+	  infinite: true,
+	  slidesToShow: 3,
+	  slidesToScroll: 3,
+	  prevArrow: '<div class="slick-prev"><i class="fa fa-chevron-left"></i></div>',
+     nextArrow: '<div class="slick-next"><i class="fa fa-chevron-right"></i></div>'
+	});
+
+	// jQuery('.promoslider').slick({
+	//   infinite: true,
+	//   // variableWidth: true,
+	//   // centerMode: true,
+	//   // speed: 2000,
+	//   // autoplay: true,
+	//   // slidesToShow: 3,
+	//   // dots: true,
+	//   // slidesToScroll: 1,
+	//   // variableWidth: true,
+	//   // adaptiveHeight: true,
+	//   prevArrow: '<div class="slick-prev"><i class="fa fa-chevron-left"></i></button>',
+ //     nextArrow: '<div class="slick-next"><i class="fa fa-chevron-right"></i></button>'
+	// });
+	function initInstaslide(){
+		jQuery('#instafeed').slick({
+		  infinite: true,
+		  slidesToShow: 3,
+		  slidesToScroll: 3,
+		  prevArrow: '<div class="slick-prev"><i class="fa fa-chevron-left"></i></div>',
+		  nextArrow: '<div class="slick-next"><i class="fa fa-chevron-right"></i></div>'
+		});
+	}
+	
+   var feed = new Instafeed({
+       get: 'user',
+       userId: 1638560334,
+		 accessToken: '24960101.467ede5.62894afebb5849409fcb571c0cbb3452',
+		 limit: 9,
+		 template: '<a href="{{link}}" target="_blank"><img src="{{image}}" /></a>',
+		 sortBy: 'most-recent',
+		 resolution: 'low_resolution',
+		 after: function(){
+				initInstaslide();
+		 }
+   });
+	
+   feed.run();
+	
+	function adjustWindow(){
+		windowY = parseInt(jQuery(window).height());
+		windowX = parseInt(jQuery(window).width());
+	}
+	
+	function adjustBanner(){
+		jQuery('.banner img').each(function(){
+			var accY = parseInt(jQuery(this).height());
+			var accOffset = '-' + (accY/2) + 'px';
+			jQuery(this).css('margin-top', accOffset);
+		});
+	}
+
+	// We may want to clean up some of the code below, for the parts that are not being used.
+
+	// left: 37, up: 38, right: 39, down: 40,
+	// spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
+	// var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+
+	// function preventDefault(e) {
+	//   e = e || window.event;
+	//   if (e.preventDefault)
+	//       e.preventDefault();
+	//   e.returnValue = false;  
+	// }
+
+	// function preventDefaultForScrollKeys(e) {
+	//     if (keys[e.keyCode]) {
+	//         preventDefault(e);
+	//         return false;
+	//     }
+	// }
+
+	// function disableScroll() {
+	//   if (window.addEventListener) // older FF
+	//       window.addEventListener('DOMMouseScroll', preventDefault, false);
+	//   window.onwheel = preventDefault; // modern standard
+	//   window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
+	//   window.ontouchmove  = preventDefault; // mobile
+	//   document.onkeydown  = preventDefaultForScrollKeys;
+	// }
+
+	// function enableScroll() {
+	//     if (window.removeEventListener)
+	//         window.removeEventListener('DOMMouseScroll', preventDefault, false);
+	//     window.onmousewheel = document.onmousewheel = null; 
+	//     window.onwheel = null; 
+	//     window.ontouchmove = null;  
+	//     document.onkeydown = null;  
+	// }
+	
+	function parallax() {
+		if(windowX > 1000){
+			//move background images
+			var scrollTop = jQuery(window).scrollTop();
+			var curtainY = parseInt(jQuery('.curtain-bottom').height());
+			parallaxItems.each(function(){
+				var elementOffset = jQuery(this).offset().top,
+					 distance = (elementOffset - scrollTop),
+					 elementHeight = -1*(jQuery(this).outerHeight());
+				if (distance <= windowY && distance >= elementHeight) {
+					jQuery(this).find('.pbackground').css('transform','translate3d(0px, ' + (-1*(distance/acceleration)) + 'px, 0)');
+				}
+			});
+			//move header and curtains
+			jQuery('header').css('top', '-' + scrollTop/2 + 'px');	
+			if((scrollTop/2) > 285){
+				jQuery('header').css('top', '-285px');	
+			}
+			//move curtain bottom upward so that only a portion remains on the screen
+			// if(scrollTop > 1 && firstTime){
+			// 	//alert('Test');
+			// 	disableScroll();
+			// 	setTimeout(function(){
+			// 		enableScroll();
+			// 	}, 900);
+			// 	jQuery('.curtain-bottom').css('top', '-' + curtainY*0.7604790419 + 'px');
+			// 	firstTime = false;
+			// }
+		}
+	}
+
+	jQuery('.videoslider div').click(function(){
+		var frameSrc = jQuery(this).data('iframe');
+		jQuery('#loaded-video').attr('src',frameSrc);
+		console.log(frameSrc);
+	});
+	
+	parallax();
+	adjustBanner();
+	adjustWindow();
+	
+	jQuery(window).scroll(function(evt) {
+		evt.preventDefault();
+		parallax();
+		adjustBanner();
+	});
+	
+	jQuery(window).resize(function() {
+		parallax();
+		adjustBanner();
+		adjustWindow();
+	});
+
+	jQuery(window).load(function() {
+		parallax();
+		adjustBanner();
+		adjustWindow();		
+	});
+	
+});
